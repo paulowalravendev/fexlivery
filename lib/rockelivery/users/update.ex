@@ -17,13 +17,13 @@ defmodule Rockelivery.Users.Update do
   end
 
   defp do_update(%User{} = user, params) do
-    user
-    |> User.changeset(params)
-    |> Repo.update!()
-    |> handle_update()
+    changeset = User.changeset(user, params)
+
+    if changeset.valid? do
+      Repo.update!(changeset)
+      {:ok, user}
+    else
+      {:error, Error.build_user_update_error()}
+    end
   end
-
-  defp handle_update(user), do: {:ok, user}
-
-  defp handle_update({:error, _changeset}), do: Error.build_user_update_error()
 end
