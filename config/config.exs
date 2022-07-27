@@ -10,6 +10,8 @@ import Config
 config :rockelivery,
   ecto_repos: [Rockelivery.Repo]
 
+config :rockelivery, Rockelivery.Repo, migration_primary_key: [type: :uuid]
+
 # Configures the endpoint
 config :rockelivery, RockeliveryWeb.Endpoint,
   url: [host: "localhost"],
