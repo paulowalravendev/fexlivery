@@ -1,21 +1,14 @@
 defmodule Rockelivery.UserTest do
   use Rockelivery.DataCase, async: true
 
+  import Rockelivery.Factory
+
   alias Ecto.Changeset
   alias Rockelivery.User
 
   describe "changeset/1" do
     test "when all params are valid, returns a valid changeset" do
-      params = %{
-        age: "27",
-        address: "Rua test, 13",
-        cep: "12345678",
-        cpf: "12345678901",
-        email: "test@mail.com",
-        password: "Test@123",
-        password_hash: "",
-        name: "Name test"
-      }
+      params = build(:user_params)
 
       response = User.changeset(params)
 
@@ -23,16 +16,7 @@ defmodule Rockelivery.UserTest do
     end
 
     test "when there are some error, returns an invalid changeset" do
-      params = %{
-        age: 15,
-        address: "Rua test, 13",
-        cep: "12345678",
-        cpf: "12345678901",
-        email: "test@mail.com",
-        password: "Tes",
-        password_hash: "",
-        name: "Name test"
-      }
+      params = %{build(:user_params) | age: 17, password: "123"}
 
       expected = %{
         age: ["must be greater than or equal to 18"],
@@ -47,16 +31,7 @@ defmodule Rockelivery.UserTest do
 
   describe "changeset/2" do
     test "when all params are valid, returns a valid changeset" do
-      params = %{
-        age: "27",
-        address: "Rua test, 13",
-        cep: "12345678",
-        cpf: "12345678901",
-        email: "test@mail.com",
-        password: "Test@123",
-        password_hash: "",
-        name: "Name test"
-      }
+      params = build(:user_params)
 
       update_params = %{name: "Name test2"}
 
@@ -70,6 +45,17 @@ defmodule Rockelivery.UserTest do
     end
 
     test "when there are some error, returns an invalid changeset" do
+      params = build(:user_params)
+      update_params = %{name: ""}
+      expected = %{name: ["can't be blank"]}
+
+      response =
+        params
+        |> User.changeset()
+        |> Changeset.apply_changes()
+        |> User.changeset(update_params)
+
+      assert errors_on(response) == expected
     end
   end
 end
