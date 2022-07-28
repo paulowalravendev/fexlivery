@@ -47,4 +47,58 @@ defmodule RockeliveryWeb.UsersControllerTest do
       assert response == expected
     end
   end
+
+  describe "delete/2" do
+    test "when there is an user with given id, deletes the user", %{conn: conn} do
+      user = insert(:user)
+      id = user.id
+
+      conn
+      |> delete(Routes.users_path(conn, :delete, id))
+      |> response(:no_content)
+    end
+
+    test "when there is not an user with given id, returns an error", %{conn: conn} do
+      id = Ecto.UUID.generate()
+      expected = "{\"message\":\"User not found\"}"
+
+      response =
+        conn
+        |> delete(Routes.users_path(conn, :delete, id))
+        |> response(:not_found)
+
+      assert response == expected
+    end
+  end
+
+  describe "show/2" do
+    test "when there is an user with given id, show the user", %{conn: conn} do
+      user = insert(:user)
+      id = user.id
+
+      expected =
+        "{\"user\":{\"id\":\"58e597b9-56db-482a-9a68-17f6447f43f1\"," <>
+          "\"age\":27,\"cpf\":\"12345678901\",\"address\":\"Rua test, 13\"," <>
+          "\"email\":\"test@mail.com\",\"name\":\"Name test\"}}"
+
+      response =
+        conn
+        |> get(Routes.users_path(conn, :show, id))
+        |> response(:ok)
+
+      assert response == expected
+    end
+
+    test "when there is not an user with given id, returns an error", %{conn: conn} do
+      id = Ecto.UUID.generate()
+      expected = "{\"message\":\"User not found\"}"
+
+      response =
+        conn
+        |> get(Routes.users_path(conn, :delete, id))
+        |> response(:not_found)
+
+      assert response == expected
+    end
+  end
 end
