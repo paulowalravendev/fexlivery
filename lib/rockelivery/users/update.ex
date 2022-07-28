@@ -12,8 +12,7 @@ defmodule Rockelivery.Users.Update do
     changeset = User.changeset(user, params)
 
     if changeset.valid? do
-      Repo.update!(changeset)
-      {:ok, user}
+      Repo.update(changeset)
     else
       {:error, Error.build_user_update_error()}
     end
