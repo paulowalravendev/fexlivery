@@ -6,6 +6,7 @@ defmodule Rockelivery.Order do
   import Ecto.Changeset
 
   @primary_key {:id, :binary_id, autogenerate: true}
+  @foreign_key_type :binary_id
 
   @required_params [:address, :comments, :payment_method, :user_id]
 
@@ -13,7 +14,7 @@ defmodule Rockelivery.Order do
 
   @payment_methods [:credit_card, :debit_card, :money]
 
-  schema "order" do
+  schema "orders" do
     field :address, :string
     field :comments, :string
     field :payment_method, Ecto.Enum, values: @payment_methods
@@ -30,6 +31,6 @@ defmodule Rockelivery.Order do
     |> validate_required(@required_params)
     |> put_assoc(:items, items)
     |> validate_length(:address, min: 10)
-    |> validate_number(:comments, min: 6)
+    |> validate_length(:comments, min: 6)
   end
 end
